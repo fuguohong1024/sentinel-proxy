@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/gtrxshock/sentinel-proxy/internal/app/core"
+	"github.com/fuguohong1024/sentinel-proxy/internal/app/core"
 	"os"
 	"syscall"
 )

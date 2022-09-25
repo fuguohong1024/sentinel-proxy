@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/gtrxshock/sentinel-proxy/internal/app/core"
+	"github.com/fuguohong1024/sentinel-proxy/internal/app/core"
 	"io"
 	"net"
 )
@@ -15,8 +15,8 @@ func (pb *ProxyBridge) Proxy(clientConn, redisConn net.Conn) {
 
 func (pb *ProxyBridge) proxyConnection(destConn net.Conn, srcConn net.Conn) {
 	_, err := io.Copy(destConn, srcConn)
-	if err != nil {
-		core.GetLogger().Debug("proxy connection closed")
+	if err != nil && err != io.EOF {
+		core.GetLogger().Debug("Proxy track closed")
 	}
 
 	_ = destConn.Close()

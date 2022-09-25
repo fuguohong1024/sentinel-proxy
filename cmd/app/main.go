@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/gtrxshock/sentinel-proxy/internal/app"
-	"github.com/gtrxshock/sentinel-proxy/internal/app/core"
-	"github.com/gtrxshock/sentinel-proxy/internal/app/handler"
+	"github.com/fuguohong1024/sentinel-proxy/internal/app"
+	"github.com/fuguohong1024/sentinel-proxy/internal/app/core"
+	"github.com/fuguohong1024/sentinel-proxy/internal/app/handler"
 	"os"
 	"os/signal"
 	"path/filepath"

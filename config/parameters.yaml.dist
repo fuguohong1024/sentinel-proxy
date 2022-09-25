@@ -10,8 +10,8 @@ sentinel_list:
   - 127.0.0.1:26381
 db_list:
   db1redis:
-    dbname: db1redis
+    master_name: db1redis
     local_port: 6379
   db2redis:
-    dbname: db2redis
+    master_name: db2redis
     local_port: 6380

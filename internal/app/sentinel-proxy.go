@@ -2,8 +2,9 @@ package app
 
 import (
 	"errors"
-	"github.com/gtrxshock/sentinel-proxy/internal/app/core"
-	"github.com/gtrxshock/sentinel-proxy/internal/app/service"
+	"github.com/fuguohong1024/sentinel-proxy/internal/app/core"
+	"github.com/fuguohong1024/sentinel-proxy/internal/app/service"
+	"net"
 )
 
 type SentinelProxy struct {
@@ -52,15 +53,15 @@ func (proxy SentinelProxy) serve() error {
 			return err
 		}
 
-		go func(db core.Db) {
-			proxy.Logger.Infof("local proxy for db started, name: %s, port: %d", db.DbName, db.LocalPort)
+		go func(db core.Master) {
+			proxy.Logger.Infof("local proxy for db started, name: %s, port: %d", db.MasterName, db.LocalPort)
 
 			for {
 				clientConn, err := dbListener.Accept()
 				if err != nil {
 					proxy.Logger.Errorf(
 						"accept new client connection error, name: %s, port: %d, error: %s",
-						db.DbName,
+						db.MasterName,
 						db.LocalPort,
 						err,
 					)
@@ -68,9 +69,9 @@ func (proxy SentinelProxy) serve() error {
 					continue
 				}
 
-				proxy.Logger.Debugf("accept new client connection, name: %s, port: %d", db.DbName, db.LocalPort)
+				proxy.Logger.Debugf("accept new client connection, name: %s, port: %d", db.MasterName, db.LocalPort)
 
-				redisAddr, err := sentinelConnector.GetActualRedisAddr(db.DbName)
+				redisAddr, err := sentinelConnector.GetActualRedisAddr(db.MasterName)
 				if err != nil {
 					proxy.Logger.Error("connect to sentinels error: ", err)
 					_ = clientConn.Close()
@@ -85,6 +86,10 @@ func (proxy SentinelProxy) serve() error {
 
 					continue
 				}
+				// 连接池保活？
+				redisConn.(*net.TCPConn).SetKeepAlive(true)
+
+				clientConn.(*net.TCPConn).SetKeepAlive(true)
 
 				proxyBridge.Proxy(clientConn, redisConn)
 			}
@@ -100,7 +105,7 @@ func (proxy *SentinelProxy) bootstrap() error {
 	isOk := true
 
 	for _, db := range proxy.Config.DbList {
-		redisAddr, err := sentinelConnector.GetActualRedisAddr(db.DbName)
+		redisAddr, err := sentinelConnector.GetActualRedisAddr(db.MasterName)
 		if err != nil {
 			proxy.Logger.Error("connect to sentinels error: ", err)
 			isOk = false

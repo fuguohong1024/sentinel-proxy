@@ -2,4 +2,4 @@
 /build/
 .idea
 *.exe
-/sentinel-proxy
+vendor

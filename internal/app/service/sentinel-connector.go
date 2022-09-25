@@ -2,8 +2,8 @@ package service
 
 import (
 	"errors"
+	"github.com/fuguohong1024/sentinel-proxy/internal/app/core"
 	"github.com/go-redis/redis/v8"
-	"github.com/gtrxshock/sentinel-proxy/internal/app/core"
 	"golang.org/x/net/context"
 	"strings"
 	"time"
@@ -34,13 +34,13 @@ func (sc *SentinelConnector) AddSentinelClient(sentinelAddr string) {
 	sc.sentinelClientList = append(sc.sentinelClientList, sentinelClient)
 }
 
-func (sc *SentinelConnector) GetActualRedisAddr(dbName string) (string, error) {
+func (sc *SentinelConnector) GetActualRedisAddr(masterName string) (string, error) {
 	actualRedisMasterList := make(map[string]int)
 	for _, sentinelClient := range sc.sentinelClientList {
 		ctx, _ := context.WithTimeout(context.Background(), sc.requestTimeout*time.Second)
-		res, err := sentinelClient.GetMasterAddrByName(ctx, dbName).Result()
+		res, err := sentinelClient.GetMasterAddrByName(ctx, masterName).Result()
 		if err != nil {
-			core.GetLogger().Errorf("get master redis addr from sentinel, db: %s, error: %s", dbName, err)
+			core.GetLogger().Errorf("get master redis addr from sentinel, db: %s, error: %s", masterName, err)
 			// mark sentinel as broken
 			continue
 		}

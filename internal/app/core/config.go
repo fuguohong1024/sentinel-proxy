@@ -7,17 +7,17 @@ import (
 )
 
 type Config struct {
-	LogLevel       string        `yaml:"log_level"`
-	RequestTimeout int           `yaml:"requests_timeout_in_seconds"`
-	SentinelList   []string      `yaml:"sentinel_list"`
-	DbList         map[string]Db `yaml:"db_list"`
-	GraylogHost    string        `yaml:"graylog.host"`
-	GraylogPort    string        `yaml:"graylog.port"`
+	LogLevel       string            `yaml:"log_level"`
+	RequestTimeout int               `yaml:"requests_timeout_in_seconds"`
+	SentinelList   []string          `yaml:"sentinel_list"`
+	DbList         map[string]Master `yaml:"db_list"`
+	GraylogHost    string            `yaml:"graylog.host"`
+	GraylogPort    string            `yaml:"graylog.port"`
 }
 
-type Db struct {
-	DbName    string `yaml:"dbname"`
-	LocalPort int    `yaml:"local_port"`
+type Master struct {
+	MasterName string `yaml:"master_name"`
+	LocalPort  int    `yaml:"local_port"`
 }
 
 var config *Config
